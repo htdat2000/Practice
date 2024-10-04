@@ -14,12 +14,8 @@ namespace QuizLibrary
     [CreateAssetMenu(fileName = "Quiz", menuName = "Data/Quiz")]
     public class Quiz : ScriptableObject
     {
-        public string tile;
         public string quiz; // the question will be stored in this variable 
-        public string answerA;
-        public string answerB;
-        public string answerC;
-        public string answerD;
+        public string[] answer = new string[4];
         public int correctAnswer;
         public Difficulty difficulty;
     }

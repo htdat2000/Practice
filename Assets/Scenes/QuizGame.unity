@@ -1491,6 +1491,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 586af5956a73aa44484e6337178b91cb, type: 2}
   - {fileID: 11400000, guid: 2d86e189760147d40833b9a31b89099f, type: 2}
   question: {fileID: 1033897795}
+  answerText:
+  - {fileID: 1145652354}
+  - {fileID: 1401593176}
+  - {fileID: 479264623}
+  - {fileID: 401149983}
   a: {fileID: 1145652354}
   b: {fileID: 1401593176}
   c: {fileID: 479264623}

@@ -13,6 +13,7 @@ public class QuizManager : MonoBehaviour
     Quiz currentQuiz;
 
     [SerializeField] TMP_Text question;
+    [SerializeField] TMP_Text[] answerText = new TMP_Text[4];
     [SerializeField] TMP_Text a;
     [SerializeField] TMP_Text b;
     [SerializeField] TMP_Text c;
@@ -32,10 +33,11 @@ public class QuizManager : MonoBehaviour
         currentQuiz = quizs[index];
 
         question.text = currentQuiz.quiz;
-        a.text = currentQuiz.answerA;
-        b.text = currentQuiz.answerB;
-        c.text = currentQuiz.answerC;
-        d.text = currentQuiz.answerD;
+        
+        for (int i = 0; i < 4; i++)
+        {
+            answerText[i].text = currentQuiz.answer[i];
+        }
         currentIndex++;
     }
     public void AnswerButton(int answer)

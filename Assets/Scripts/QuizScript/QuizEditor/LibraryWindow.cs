@@ -8,7 +8,7 @@ namespace QuizLibrary
 {
     public class LibraryWindow : EditorWindow
     {
-        //public List<Quiz> quizList = new();
+        List<Quiz> quizList = new();
 
         [MenuItem("Window/Library")]
         static void ShowWindow()
@@ -16,9 +16,25 @@ namespace QuizLibrary
             LibraryWindow window = (LibraryWindow)GetWindow(typeof(LibraryWindow));
             window.Show();
         }
+        void OnEnable()
+        {
+            Init();
+            Debug.Log(quizList.Count);
+        }
         void OnGUI()
         {
             DrawSettings();
+        }
+        void Init()
+        {
+            LoadQuiz();
+        }
+        void LoadQuiz()
+        {
+            foreach (Quiz quiz in Resources.LoadAll("Quizzes", typeof(Quiz)).Cast<Quiz>())
+            {
+                quizList.Add(quiz);
+            }
         }
         void DrawSettings()
         {

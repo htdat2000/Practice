@@ -13,8 +13,14 @@ MonoBehaviour:
   m_Name: Quiz1
   m_EditorClassIdentifier: 
   quiz: capital of vietnam
+  answer:
+  - ha noi
+  - hcm
+  - can tho
+  - phu quoc
   answerA: ha noi
   answerB: ho chi minh
   answerC: can tho
   answerD: phu quoc
   correctAnswer: 0
+  difficulty: 0

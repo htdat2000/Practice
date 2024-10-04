@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -7,16 +5,21 @@ namespace QuizLibrary
 {
     public class QuizEditor : EditorWindow
     {
-        static Quiz quizInfo;
+        Quiz quizInfo;
+        string fileName = " hahaah hahah ";
+
+        bool[] answerSelected = { true, false, false, false };
+
+        string path = "Assets/Resources/Quizzes/";
 
         void OnEnable()
         {
-            quizInfo = (Quiz)CreateInstance("Quiz");
+            quizInfo = CreateInstance<Quiz>();
         }
         public static void OpenWindow()
         {
             QuizEditor window = GetWindow<QuizEditor>();
-            window.minSize = new (600, 300);
+            window.minSize = new(600, 300);
             window.Show();
         }
         void OnGUI()
@@ -25,32 +28,76 @@ namespace QuizLibrary
         }
         void DrawSettings()
         {
+            //File name for saving 
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Label("Title");
-            quizInfo.tile = EditorGUILayout.TextField(quizInfo.tile);
+            GUILayout.Label("File name");
+            fileName = EditorGUILayout.TextField(fileName);
             EditorGUILayout.EndHorizontal();
 
+            //Quiz describe
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("Quiz");
-            quizInfo.quiz = EditorGUILayout.TextArea(quizInfo.quiz,GUILayout.MinHeight(50));
+            quizInfo.quiz = EditorGUILayout.TextArea(quizInfo.quiz, GUILayout.MinHeight(50));
             EditorGUILayout.EndHorizontal();
 
-            DrawTextField("A", quizInfo.answerA);
-            DrawTextField("B", quizInfo.answerB);
-            DrawTextField("C", quizInfo.answerC);
-            DrawTextField("D", quizInfo.answerD);
+            //Answer section
+            AnswerSectionSettings();
 
+            //Difficulty choosing
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("Difficulty");
             quizInfo.difficulty = (Difficulty)EditorGUILayout.EnumPopup(quizInfo.difficulty);
             EditorGUILayout.EndHorizontal();
+
+            //Save data
+            if (GUILayout.Button("Save"))
+            {
+                Debug.Log("Save");
+                Save();
+            }
         }
-        void DrawTextField(string _title, string _)
+        void AnswerSectionSettings()
         {
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label(_title);
-            _ = EditorGUILayout.TextField(_);
-            EditorGUILayout.EndHorizontal();
+            //Drawing answer section
+            GUILayout.Label("Answer");
+            for (int i = 0; i < quizInfo.answer.Length; i++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                answerSelected[i] = EditorGUILayout.Toggle(answerSelected[i]);
+                if (answerSelected[i] == true)
+                {
+                    quizInfo.correctAnswer = i;
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (j != i)
+                        {
+                            answerSelected[j] = false;
+                        }
+                    }
+                }
+                quizInfo.answer[i] = EditorGUILayout.TextField(quizInfo.answer[i]);
+                EditorGUILayout.EndHorizontal();
+            }
+        }
+        void Save()
+        {
+            string saveName = fileName.Replace(" ", "");
+            string savePath = path + saveName + ".asset";
+
+            string assetGUID = AssetDatabase.AssetPathToGUID(savePath, AssetPathToGUIDOptions.OnlyExistingAssets);
+            if ( assetGUID != null && assetGUID != "")
+            {
+                Debug.Log(AssetDatabase.AssetPathToGUID(savePath));
+                Debug.Log("Exist");
+            }
+            else
+            {
+                AssetDatabase.CreateAsset(quizInfo, savePath);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+                
+                quizInfo = CreateInstance<Quiz>();
+            }
         }
     }
 }
