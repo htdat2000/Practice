@@ -18,5 +18,6 @@ namespace QuizLibrary
         public string[] answer = new string[4];
         public int correctAnswer;
         public Difficulty difficulty;
+        public List<string> test = new();
     }
 }

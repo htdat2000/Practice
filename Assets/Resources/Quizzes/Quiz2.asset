@@ -18,9 +18,8 @@ MonoBehaviour:
   - dep
   - trai
   - nhat
-  answerA: dat
-  answerB: dep
-  answerC: trai
-  answerD: nhat
   correctAnswer: 0
   difficulty: 0
+  test:
+  - 
+  - 
