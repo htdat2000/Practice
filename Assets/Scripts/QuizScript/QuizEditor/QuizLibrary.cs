@@ -6,6 +6,7 @@ using UnityEditor;
 
 namespace QuizLibrary
 {
+    [CreateAssetMenu(fileName = "Lib", menuName = "Data/QuizLib")]
     public class QuizLibrary : ScriptableObject 
     {
         [SerializeField] List<Quiz> quizList = new();
