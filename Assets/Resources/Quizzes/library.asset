@@ -10,8 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4f895cf8410e3834aa421be1661a00e4, type: 3}
-  m_Name: Lib
+  m_Name: library
   m_EditorClassIdentifier: 
-  quizList:
-  - {fileID: 0}
-  - {fileID: 0}
+  quizList: []
