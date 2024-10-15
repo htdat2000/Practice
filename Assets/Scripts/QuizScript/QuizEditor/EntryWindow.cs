@@ -9,6 +9,7 @@ namespace QuizLibrary
     {
         QuizLibrary quizLibrary;
 
+        static EntryWindow window;
         string filePath = "Assets/Resources/Quizzes/";
 
         [Header("Help Box Design")]
@@ -26,7 +27,7 @@ namespace QuizLibrary
         [MenuItem("Window/Library")]
         static void ShowWindow()
         {
-            EntryWindow window = GetWindow<EntryWindow>();
+            window = GetWindow<EntryWindow>();
             window.minSize = new Vector2(300, 115);
             window.maxSize = new Vector2(300, 115);
             window.Show();
@@ -119,10 +120,9 @@ namespace QuizLibrary
             string assetGUID = AssetDatabase.AssetPathToGUID(savePath, AssetPathToGUIDOptions.OnlyExistingAssets);
             if (assetGUID != null && assetGUID != "")
             {
-                Debug.Log(AssetDatabase.AssetPathToGUID(savePath));
                 QuizLibrary lib = (QuizLibrary)AssetDatabase.LoadAssetAtPath(savePath, typeof(QuizLibrary));
                 OpenLibrary(lib);
-                Debug.Log("Exist");
+
             }
             else //if not create a new one
             {
@@ -136,9 +136,8 @@ namespace QuizLibrary
         }
         void OpenLibrary(QuizLibrary _lib)
         {
-            LibraryWindow.ShowWindow(quizLibrary);
-            EntryWindow window = GetWindow<EntryWindow>();
+            LibraryWindow.ShowWindow(_lib);
             window.Close();
-        }
+        }   
     }
 }

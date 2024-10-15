@@ -11,7 +11,7 @@ namespace QuizLibrary
     {
         static QuizLibrary quizLibrary;
 
-        SerializedObject librarySO;
+        static SerializedObject librarySO;
 
         ReorderableList quizList;
         Quiz selectedQuiz;
@@ -37,28 +37,20 @@ namespace QuizLibrary
         public static void ShowWindow(QuizLibrary _lib)
         { 
             quizLibrary = _lib;
+            librarySO = new SerializedObject(_lib);
             
-            LibraryWindow window = (LibraryWindow)GetWindow(typeof(LibraryWindow));
-            window.minSize = new Vector2(600, 400);
-            window.maxSize = new Vector2(600, 400);
-            window.Show();
-        }
-        [MenuItem("Window/LibraryMainMenu")]
-        public static void ShowWindow()
-        { 
-            LibraryWindow window = (LibraryWindow)GetWindow(typeof(LibraryWindow));
+            LibraryWindow window = GetWindow<LibraryWindow>();
             window.minSize = new Vector2(600, 400);
             window.maxSize = new Vector2(600, 400);
             window.Show();
         }
         void OnEnable()
         {
-            Init();
-            Debug.Log("call onenable");
+            EditorApplication.update += Init;
         }
         void OnGUI()
         {
-            //librarySO.Update();
+            librarySO.Update();
             DrawTexture();
 
             DrawHeaderSection();
@@ -71,12 +63,11 @@ namespace QuizLibrary
                 DrawQuizEditorSection();
             }
 
-            //librarySO.ApplyModifiedProperties();
-            
+            librarySO.ApplyModifiedProperties(); 
         }
         void Init()
         {
-            Debug.Log("call init");
+            EditorApplication.update -= Init;
             DrawLayout();
             InitTexture();
             CreateQuizList();
@@ -130,8 +121,10 @@ namespace QuizLibrary
         {
             GUILayout.BeginArea(headerSection);
             Rect rectDrawPos = new(200, 0, 200, 20f);
+            GUI.enabled = false;
             quizLibrary = (QuizLibrary)EditorGUI.ObjectField(rectDrawPos, quizLibrary, typeof(QuizLibrary), false);
             //CreateQuizList();
+            GUI.enabled = true;
             GUILayout.EndArea();
         }
         void CreateQuizList()
@@ -165,12 +158,5 @@ namespace QuizLibrary
         }
         #endregion
         
-        void DrawSettings()
-        {
-            if (GUILayout.Button("Create"))
-            {
-                QuizEditor.OpenWindow();
-            }
-        }
     }
 }
