@@ -13,9 +13,6 @@ namespace QuizLibrary
 
         static SerializedObject librarySO;
 
-        ReorderableList quizList;
-        Quiz selectedQuiz;
-
         [Header("Layout")]
         Rect headerSection;
         Rect quizListSection;
@@ -26,6 +23,11 @@ namespace QuizLibrary
         Texture2D quizListTexture;
         Texture2D editorTexture;
 
+        [Header("Quiz List Section")]
+        ReorderableList quizList;
+        Quiz selectedQuiz;
+        Vector2 scrollPos;
+
         [Header("Quiz Editor Section")]
         string currentQuiz = "Enter Quiz Here";
         string[] currentAnswer = new string[4];
@@ -35,10 +37,10 @@ namespace QuizLibrary
 
         //[MenuItem("Window/LibraryMainMenu")]
         public static void ShowWindow(QuizLibrary _lib)
-        { 
+        {
             quizLibrary = _lib;
             librarySO = new SerializedObject(_lib);
-            
+
             LibraryWindow window = GetWindow<LibraryWindow>();
             window.minSize = new Vector2(600, 400);
             window.maxSize = new Vector2(600, 400);
@@ -56,14 +58,14 @@ namespace QuizLibrary
             DrawHeaderSection();
             if (quizList != null)
             {
-                DrawQuizListSection();          
+                DrawQuizListSection();
             }
             //if(selectedQuiz != null)
             {
                 DrawQuizEditorSection();
             }
 
-            librarySO.ApplyModifiedProperties(); 
+            librarySO.ApplyModifiedProperties();
         }
         void Init()
         {
@@ -115,7 +117,7 @@ namespace QuizLibrary
             GUI.DrawTexture(quizListSection, quizListTexture);
         }
         #endregion
-        
+
         #region Header Section
         void DrawHeaderSection()
         {
@@ -127,22 +129,43 @@ namespace QuizLibrary
             GUI.enabled = true;
             GUILayout.EndArea();
         }
-        void CreateQuizList()
-        {
-            if (quizLibrary != null && quizList == null)
-            {
-                librarySO = new SerializedObject(quizLibrary);
-                quizList = new ReorderableList(librarySO, librarySO.FindProperty("quizList"));
-            }
-        }
         #endregion
 
         #region Quiz List Section
         void DrawQuizListSection()
         {
             GUILayout.BeginArea(quizListSection);
-            quizList.DoLayoutList();
+            GUILayout.BeginVertical();
+            {
+                EditorGUILayout.LabelField("Quiz List");
+                scrollPos = EditorGUILayout.BeginScrollView(scrollPos, true, true);
+                quizList.DoLayoutList();
+                EditorGUILayout.EndScrollView();
+                if(GUILayout.Button("Add"))
+                {
+                    Debug.Log("Add new quiz");
+                }
+            }
+            GUILayout.EndVertical();
             GUILayout.EndArea();
+        }
+        void CreateQuizList()
+        {
+            if (quizLibrary != null && quizList == null)
+            {
+                librarySO = new SerializedObject(quizLibrary);
+                quizList = new ReorderableList(librarySO, librarySO.FindProperty("quizList"), true, false, false, false);
+                DrawListElement(quizList);
+            }
+        }
+        void DrawListElement(ReorderableList _reoderableList)
+        {
+            _reoderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {   
+                var element = _reoderableList.serializedProperty.GetArrayElementAtIndex(index);
+                SerializedProperty quizString = element.FindPropertyRelative("quiz");
+                EditorGUI.LabelField(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), quizString.stringValue);
+            };
         }
         #endregion
 
@@ -157,6 +180,6 @@ namespace QuizLibrary
             GUILayout.EndArea();
         }
         #endregion
-        
+
     }
 }

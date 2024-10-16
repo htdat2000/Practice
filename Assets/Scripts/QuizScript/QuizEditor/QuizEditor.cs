@@ -15,7 +15,7 @@ namespace QuizLibrary
 
         void OnEnable()
         {
-            quizInfo = CreateInstance<Quiz>();
+            //quizInfo = CreateInstance<Quiz>();
         }
         public static void OpenWindow()
         {
@@ -94,11 +94,11 @@ namespace QuizLibrary
             }
             else
             {
-                AssetDatabase.CreateAsset(quizInfo, savePath);
+                //AssetDatabase.CreateAsset(quizInfo, savePath);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
                 
-                quizInfo = CreateInstance<Quiz>();
+                //quizInfo = CreateInstance<Quiz>();
             }
         }
     }
