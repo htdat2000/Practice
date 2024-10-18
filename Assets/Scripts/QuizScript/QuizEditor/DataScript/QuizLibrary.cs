@@ -11,5 +11,9 @@ namespace QuizLibrary
     {
         [SerializeField] List<Quiz> quizList = new();
 
+        public List<Quiz> QuizList
+        {
+            get { return quizList; }
+        }
     }
 }

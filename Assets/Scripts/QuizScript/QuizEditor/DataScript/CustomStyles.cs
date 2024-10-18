@@ -7,6 +7,7 @@ public static class CustomStyles
 {
     static GUIStyle helpBoxStyle;
     static GUIStyle helpBoxMessageStyle;
+    static GUIStyle reListEleLabelStyle;
 
     public static GUIStyle HelpBoxStyle
     {
@@ -27,6 +28,17 @@ public static class CustomStyles
                 wordWrap = true // Ensure text wraps properly
             };
             return helpBoxMessageStyle;
+        }
+    }
+    public static GUIStyle ReListEleLabelStyle
+    {
+        get
+        {
+            reListEleLabelStyle ??= new GUIStyle(EditorStyles.label)
+            {
+                clipping = TextClipping.Clip
+            };
+            return reListEleLabelStyle; 
         }
     }
 }

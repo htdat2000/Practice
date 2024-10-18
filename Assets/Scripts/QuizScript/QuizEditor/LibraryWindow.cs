@@ -28,11 +28,8 @@ namespace QuizLibrary
         Quiz selectedQuiz;
         Vector2 scrollPos;
 
-        [Header("Quiz Editor Section")]
-        string currentQuiz = "Enter Quiz Here";
-        string[] currentAnswer = new string[4];
-        int currentCorrectAnswer;
-        Difficulty currentDifficulty;
+        //[Header("Quiz Editor Section")]
+    
 
 
         //[MenuItem("Window/LibraryMainMenu")]
@@ -60,7 +57,7 @@ namespace QuizLibrary
             {
                 DrawQuizListSection();
             }
-            //if(selectedQuiz != null)
+            if (selectedQuiz != null)
             {
                 DrawQuizEditorSection();
             }
@@ -138,10 +135,10 @@ namespace QuizLibrary
             GUILayout.BeginVertical();
             {
                 EditorGUILayout.LabelField("Quiz List");
-                scrollPos = EditorGUILayout.BeginScrollView(scrollPos, true, true);
+                scrollPos = EditorGUILayout.BeginScrollView(scrollPos, true, false);
                 quizList.DoLayoutList();
                 EditorGUILayout.EndScrollView();
-                if(GUILayout.Button("Add"))
+                if (GUILayout.Button("Add"))
                 {
                     Debug.Log("Add new quiz");
                 }
@@ -156,16 +153,24 @@ namespace QuizLibrary
                 librarySO = new SerializedObject(quizLibrary);
                 quizList = new ReorderableList(librarySO, librarySO.FindProperty("quizList"), true, false, false, false);
                 DrawListElement(quizList);
+                OnListElementSelected(quizList);
             }
         }
         void DrawListElement(ReorderableList _reoderableList)
         {
             _reoderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
-            {   
+            {
                 var element = _reoderableList.serializedProperty.GetArrayElementAtIndex(index);
                 SerializedProperty quizString = element.FindPropertyRelative("quiz");
-                EditorGUI.LabelField(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), quizString.stringValue);
+                EditorGUI.LabelField(rect, quizString.stringValue, CustomStyles.ReListEleLabelStyle);
             };
+        }
+        void OnListElementSelected(ReorderableList _reoderableList)
+        {
+            _reoderableList.onSelectCallback = (ReorderableList l) =>
+                {
+                    selectedQuiz = quizLibrary.QuizList[l.index];
+                };
         }
         #endregion
 
@@ -174,8 +179,10 @@ namespace QuizLibrary
         {
             GUILayout.BeginArea(quizEditorSection);
             GUILayout.BeginArea(new Rect(50, 0, quizEditorSection.width, quizEditorSection.height));
-            EditorGUILayout.LabelField("Quiz:");
-            currentQuiz = GUILayout.TextArea(currentQuiz, 400, GUILayout.Width(300), GUILayout.Height(150));
+            {
+                EditorGUILayout.LabelField("Quiz:");
+                selectedQuiz.quiz = GUILayout.TextArea(selectedQuiz.quiz, 400, GUILayout.Width(300), GUILayout.Height(100));
+            }
             GUILayout.EndArea();
             GUILayout.EndArea();
         }
