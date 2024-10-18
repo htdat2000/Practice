@@ -14,11 +14,18 @@ namespace QuizLibrary
 
         [Header("Help Box Design")]
         GUIContent infoIcon;
+        int iconWidth = 35;
+        int iconHeight = 35;
         readonly string boxMessage = "Please assign your library or create a new one to continue.";
 
-        [Header("Layout Section")]
+        [Header("Input Section")]
         Rect inputSection;
+        Rect inputField = new Rect(100, 0, 100, 20); //The object field for assigning library 
+
+        [Header("Message Section")]
         Rect messageSection;
+        Rect helpBoxField = new Rect(25, 10, 250, 55);
+        Rect buttonField = new Rect(195, 60, 80, 25);
 
         [Header("Texture")]
         Texture2D inputSecTexture;
@@ -79,10 +86,12 @@ namespace QuizLibrary
         void DrawInputSection()
         {
             GUILayout.BeginArea(inputSection);
-            quizLibrary = (QuizLibrary)EditorGUI.ObjectField(new Rect(100, 0, 100, 20), quizLibrary, typeof(QuizLibrary), false);
-            if (quizLibrary != null)
             {
-                OpenLibrary(quizLibrary);
+                quizLibrary = (QuizLibrary)EditorGUI.ObjectField(inputField, quizLibrary, typeof(QuizLibrary), false);
+                if (quizLibrary != null)
+                {
+                    OpenLibrary(quizLibrary);
+                }
             }
             GUILayout.EndArea();
         }
@@ -90,15 +99,15 @@ namespace QuizLibrary
         {
             GUILayout.BeginArea(messageSection);
             {
-                GUILayout.BeginArea(new Rect(25, 10, 250, 55));
+                GUILayout.BeginArea(helpBoxField);
                 {
                     GUILayout.BeginHorizontal(CustomStyles.HelpBoxStyle);
-                    GUILayout.Label(infoIcon, GUILayout.Width(35), GUILayout.Height(35));
+                    GUILayout.Label(infoIcon, GUILayout.Width(iconWidth), GUILayout.Height(iconHeight));
                     GUILayout.Label(boxMessage, CustomStyles.HelpBoxMessageStyle);
                     GUILayout.EndHorizontal();
                 }
                 GUILayout.EndArea();
-                GUILayout.BeginArea(new Rect(195, 60, 80, 25));
+                GUILayout.BeginArea(buttonField);
                 {
                     if (GUILayout.Button("Create", GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true)))
                     {
@@ -138,6 +147,6 @@ namespace QuizLibrary
         {
             LibraryWindow.ShowWindow(_lib);
             window.Close();
-        }   
+        }
     }
 }
