@@ -62,7 +62,7 @@ namespace QuizLibrary
         {
             //Drawing answer section
             GUILayout.Label("Answer", GUILayout.MaxWidth(70));
-            for (int i = 0; i < quizInfo.answer.Length; i++)
+            for (int i = 0; i < quizInfo.answer.Count; i++)
             {
                 EditorGUILayout.BeginHorizontal();
                 answerSelected[i] = EditorGUILayout.Toggle(answerSelected[i], GUILayout.MaxWidth(40));

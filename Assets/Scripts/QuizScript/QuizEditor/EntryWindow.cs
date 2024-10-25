@@ -10,22 +10,22 @@ namespace QuizLibrary
         QuizLibrary quizLibrary;
 
         static EntryWindow window;
-        string filePath = "Assets/Resources/Quizzes/";
+        readonly string filePath = "Assets/Resources/Quizzes/";
 
         [Header("Help Box Design")]
         GUIContent infoIcon;
-        int iconWidth = 35;
-        int iconHeight = 35;
+        readonly int iconWidth = 35;
+        readonly int iconHeight = 35;
         readonly string boxMessage = "Please assign your library or create a new one to continue.";
 
         [Header("Input Section")]
         Rect inputSection;
-        Rect inputField = new Rect(100, 0, 100, 20); //The object field for assigning library 
+        Rect libraryInputField = new (100, 0, 100, 20); //The object field for assigning library 
 
         [Header("Message Section")]
         Rect messageSection;
-        Rect helpBoxField = new Rect(25, 10, 250, 55);
-        Rect buttonField = new Rect(195, 60, 80, 25);
+        Rect helpBoxField = new (25, 10, 250, 55);
+        Rect buttonField = new (195, 60, 80, 25);
 
         [Header("Texture")]
         Texture2D inputSecTexture;
@@ -87,7 +87,7 @@ namespace QuizLibrary
         {
             GUILayout.BeginArea(inputSection);
             {
-                quizLibrary = (QuizLibrary)EditorGUI.ObjectField(inputField, quizLibrary, typeof(QuizLibrary), false);
+                quizLibrary = (QuizLibrary)EditorGUI.ObjectField(libraryInputField, quizLibrary, typeof(QuizLibrary), false);
                 if (quizLibrary != null)
                 {
                     OpenLibrary(quizLibrary);

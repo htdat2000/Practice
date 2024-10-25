@@ -8,6 +8,8 @@ public static class CustomStyles
     static GUIStyle helpBoxStyle;
     static GUIStyle helpBoxMessageStyle;
     static GUIStyle reListEleLabelStyle;
+    static GUIStyle editorPadding; 
+    static GUIStyle noSpacingStyle;
 
     public static GUIStyle HelpBoxStyle
     {
@@ -39,6 +41,29 @@ public static class CustomStyles
                 clipping = TextClipping.Clip
             };
             return reListEleLabelStyle; 
+        }
+    }
+    public static GUIStyle EditorPadding
+    {
+        get
+        {
+            editorPadding ??= new GUIStyle(EditorStyles.helpBox)
+            {
+                padding = new RectOffset(25, 25, 20, 20) 
+            };
+            return editorPadding;
+        }
+    }
+    public static GUIStyle NoSpacingStyle
+    {
+        get
+        {
+            noSpacingStyle ??= new GUIStyle()
+            {
+                padding = new RectOffset(0, 0, 0, 0),
+                margin = new RectOffset(0, 0, 0, 0) 
+            };
+            return noSpacingStyle;
         }
     }
 }

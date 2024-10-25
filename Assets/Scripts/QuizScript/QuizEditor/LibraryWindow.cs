@@ -13,24 +13,31 @@ namespace QuizLibrary
 
         static SerializedObject librarySO;
 
-        [Header("Layout")]
-        Rect headerSection;
-        Rect quizListSection;
-        Rect quizEditorSection;
+        [Header("Header Section")]
+        Rect headerSection; // (0, 0, 600, 60)
+        Rect libraryInputField = new(200, 0, 200, 20); //object field for assigning library
+
+        [Header("Quiz List Section")]
+        Rect quizListSection;   //(0, 60, 200, 340)
+        Rect titleField = new(0, 0, 200, 20);
+        Rect quizField = new(0, 20, 200, 320);
+        ReorderableList quizList;
+        int listHeight = 290;
+        int addBtnHeight = 30;
+        Vector2 scrollPos;
+        Quiz selectedQuiz;
+        int selectedAnswer = -1;
+
+        [Header("Quiz Editor Section")]
+        Rect quizEditorSection; //(200, 60, 400, 340)
+        Rect quizDataField = new(25, 20, 350, 260);
+        ReorderableList answerList;
+
 
         [Header("Texture")]
         Texture2D headerTexture;
         Texture2D quizListTexture;
         Texture2D editorTexture;
-
-        [Header("Quiz List Section")]
-        ReorderableList quizList;
-        Quiz selectedQuiz;
-        Vector2 scrollPos;
-
-        //[Header("Quiz Editor Section")]
-    
-
 
         //[MenuItem("Window/LibraryMainMenu")]
         public static void ShowWindow(QuizLibrary _lib)
@@ -50,7 +57,7 @@ namespace QuizLibrary
         void OnGUI()
         {
             librarySO.Update();
-            DrawTexture();
+            //DrawTexture();
 
             DrawHeaderSection();
             if (quizList != null)
@@ -68,7 +75,7 @@ namespace QuizLibrary
         {
             EditorApplication.update -= Init;
             DrawLayout();
-            InitTexture();
+            //InitTexture();
             CreateQuizList();
 
         }
@@ -111,7 +118,7 @@ namespace QuizLibrary
         {
             GUI.DrawTexture(new Rect(200, 0, 200, 60), headerTexture);
             GUI.DrawTexture(quizEditorSection, editorTexture);
-            GUI.DrawTexture(quizListSection, quizListTexture);
+            //GUI.DrawTexture(quizDataField, quizListTexture);
         }
         #endregion
 
@@ -119,11 +126,13 @@ namespace QuizLibrary
         void DrawHeaderSection()
         {
             GUILayout.BeginArea(headerSection);
-            Rect rectDrawPos = new(200, 0, 200, 20f);
-            GUI.enabled = false;
-            quizLibrary = (QuizLibrary)EditorGUI.ObjectField(rectDrawPos, quizLibrary, typeof(QuizLibrary), false);
-            //CreateQuizList();
-            GUI.enabled = true;
+            {
+                GUILayout.Label("YOUR QUIZ LIBRARY");
+                GUI.enabled = false;
+                quizLibrary = (QuizLibrary)EditorGUI.ObjectField(libraryInputField, quizLibrary, typeof(QuizLibrary), false);
+                //CreateQuizList();
+                GUI.enabled = true;
+            }
             GUILayout.EndArea();
         }
         #endregion
@@ -132,18 +141,24 @@ namespace QuizLibrary
         void DrawQuizListSection()
         {
             GUILayout.BeginArea(quizListSection);
-            GUILayout.BeginVertical();
             {
-                EditorGUILayout.LabelField("Quiz List");
-                scrollPos = EditorGUILayout.BeginScrollView(scrollPos, true, false);
-                quizList.DoLayoutList();
-                EditorGUILayout.EndScrollView();
-                if (GUILayout.Button("Add"))
+                EditorGUI.LabelField(titleField, "Quiz List");
+                GUILayout.BeginArea(quizField);
                 {
-                    Debug.Log("Add new quiz");
+                    GUILayout.BeginVertical();
+                    {
+                        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, true, GUILayout.Height(listHeight));
+                        quizList.DoLayoutList();
+                        EditorGUILayout.EndScrollView();
+                        if (GUILayout.Button("Add", GUILayout.Height(addBtnHeight)))
+                        {
+                            Debug.Log("Add new quiz");
+                        }
+                    }
                 }
+                GUILayout.EndVertical();
+                GUILayout.EndArea();
             }
-            GUILayout.EndVertical();
             GUILayout.EndArea();
         }
         void CreateQuizList()
@@ -170,6 +185,7 @@ namespace QuizLibrary
             _reoderableList.onSelectCallback = (ReorderableList l) =>
                 {
                     selectedQuiz = quizLibrary.QuizList[l.index];
+                    CreateAnswerList();
                 };
         }
         #endregion
@@ -178,13 +194,51 @@ namespace QuizLibrary
         void DrawQuizEditorSection()
         {
             GUILayout.BeginArea(quizEditorSection);
-            GUILayout.BeginArea(new Rect(50, 0, quizEditorSection.width, quizEditorSection.height));
             {
-                EditorGUILayout.LabelField("Quiz:");
-                selectedQuiz.quiz = GUILayout.TextArea(selectedQuiz.quiz, 400, GUILayout.Width(300), GUILayout.Height(100));
+                GUILayout.BeginArea(quizDataField, CustomStyles.EditorPadding);
+                {
+                    EditorGUILayout.LabelField("Quiz:");
+                    selectedQuiz.quiz = GUILayout.TextArea(selectedQuiz.quiz, 200, GUILayout.Width(300), GUILayout.Height(80));
+                    GUILayout.Space(10);
+
+                    answerList?.DoList(new Rect(25, 130, 150, 70));
+
+                    if (selectedAnswer == -1)
+                    {
+                        answerList.index = 0;
+                        selectedAnswer = 0;
+                    }
+                    selectedQuiz.answer[selectedAnswer] = EditorGUI.TextArea(new Rect(195, 130, 130, 70), selectedQuiz.answer[selectedAnswer]);
+                    selectedQuiz.difficulty = (Difficulty)EditorGUI.EnumPopup(new Rect(195, 205, 130, 20), selectedQuiz.difficulty);
+                }
+                GUILayout.EndArea();
             }
             GUILayout.EndArea();
-            GUILayout.EndArea();
+        }
+        void CreateAnswerList()
+        {
+            if (quizList != null && selectedQuiz != null)
+            {
+                answerList = new ReorderableList(selectedQuiz.answer, typeof(string), false, true, false, false);
+            }
+            selectedAnswer = -1;
+            DrawAnswerListElement();
+            OnAnswerSelected();
+        }
+        void DrawAnswerListElement()
+        {
+            answerList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
+            {
+                var element = answerList.list[index];
+                EditorGUI.LabelField(rect, "Answer " + index + ": " + element.ToString(), CustomStyles.ReListEleLabelStyle);
+            };
+        }
+        void OnAnswerSelected()
+        {
+            answerList.onSelectCallback = (ReorderableList l) =>
+                {
+                    selectedAnswer = l.index;
+                };
         }
         #endregion
 
