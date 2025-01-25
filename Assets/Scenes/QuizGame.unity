@@ -1488,8 +1488,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   quizs:
-  - {fileID: 11400000, guid: 586af5956a73aa44484e6337178b91cb, type: 2}
-  - {fileID: 11400000, guid: 2d86e189760147d40833b9a31b89099f, type: 2}
+  - quiz: love
+    answer:
+    - 1
+    - 2
+    - 3
+    - 4
+    correctAnswer: 1
+    difficulty: 0
+  - quiz: hea
+    answer:
+    - asd
+    - wsd
+    - sd
+    - sdg
+    correctAnswer: 0
+    difficulty: 0
   question: {fileID: 1033897795}
   answerText:
   - {fileID: 1145652354}

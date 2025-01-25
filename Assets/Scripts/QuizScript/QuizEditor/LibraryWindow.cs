@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
-using System.Linq;
+using System;
 
 namespace QuizLibrary
 {
@@ -130,7 +128,6 @@ namespace QuizLibrary
                 GUILayout.Label("YOUR QUIZ LIBRARY");
                 GUI.enabled = false;
                 quizLibrary = (QuizLibrary)EditorGUI.ObjectField(libraryInputField, quizLibrary, typeof(QuizLibrary), false);
-                //CreateQuizList();
                 GUI.enabled = true;
             }
             GUILayout.EndArea();
@@ -142,7 +139,6 @@ namespace QuizLibrary
         {
             GUILayout.BeginArea(quizListSection);
             {
-                EditorGUI.LabelField(titleField, "Quiz List");
                 GUILayout.BeginArea(quizField);
                 {
                     GUILayout.BeginVertical();
@@ -166,15 +162,19 @@ namespace QuizLibrary
             if (quizLibrary != null && quizList == null)
             {
                 librarySO = new SerializedObject(quizLibrary);
-                quizList = new ReorderableList(librarySO, librarySO.FindProperty("quizList"), true, false, false, false);
+                quizList = new ReorderableList(librarySO, librarySO.FindProperty("quizList"), true, true, false, false);
                 DrawListElement(quizList);
                 OnListElementSelected(quizList);
+                quizList.drawHeaderCallback = (Rect rect) =>
+                {
+                    EditorGUI.LabelField(rect, "Quiz List");
+                };
             }
         }
         void DrawListElement(ReorderableList _reoderableList)
         {
             _reoderableList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) =>
-            {
+            {     
                 var element = _reoderableList.serializedProperty.GetArrayElementAtIndex(index);
                 SerializedProperty quizString = element.FindPropertyRelative("quiz");
                 EditorGUI.LabelField(rect, quizString.stringValue, CustomStyles.ReListEleLabelStyle);
@@ -224,6 +224,10 @@ namespace QuizLibrary
             selectedAnswer = -1;
             DrawAnswerListElement();
             OnAnswerSelected();
+            answerList.drawHeaderCallback = (Rect rect) =>
+            {
+                EditorGUI.LabelField(rect, "Answers");
+            };
         }
         void DrawAnswerListElement()
         {
@@ -241,6 +245,5 @@ namespace QuizLibrary
                 };
         }
         #endregion
-
     }
 }
